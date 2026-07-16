@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修行アプリ</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1 id="title">食事修行</h1>
+
+    <div class="card">
+        <h2>現在の状態</h2>
+
+        <p id="status">
+            待機中
+        </p>
+
+        <p id="time">0秒</p>
+
+        <p id="liveTime">0秒</p>
+
+        <button id="startBtn">
+            修行開始
+        </button>
+
+        <button id="stopBtn">
+            修行終了
+        </button>
+    </div>
+
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="app.js"></script>
+
+</body>
+</html>
