@@ -163,32 +163,6 @@ onSnapshot(doc(db, "records", SHUGYO_TYPE), (snap) => {
 // =========================
 // URLから開始・終了
 // =========================
-if (action === "toggle") {
-
-    const ref = doc(db, "records", SHUGYO_TYPE);
-
-    getDoc(ref).then((snap) => {
-
-        if (!snap.exists()) {
-
-            startTraining();
-            return;
-
-        }
-
-        const data = snap.data();
-
-        if (data.running) {
-
-            stopTraining();
-
-        } else {
-
-            startTraining();
-
-        }
-
-    });
 
 }
 
