@@ -30,7 +30,13 @@ const liveTime = document.getElementById("liveTime");
 
 const startBtn = document.getElementById("startBtn");
 const stopBtn = document.getElementById("stopBtn");
+const pauseBtn = document.getElementById("pauseBtn");
 
+const startTimeText = document.getElementById("startTimeText");
+const endTimeText = document.getElementById("endTimeText");
+
+stopBtn.style.display="none";
+pauseBtn.style.display="none";
 // =========================
 // タイトル
 // =========================
@@ -117,6 +123,12 @@ startBtn.addEventListener("click", startTraining);
 
 stopBtn.addEventListener("click", stopTraining);
 
+pauseBtn.addEventListener("click", () => {
+
+    alert("中断機能は現在開発中です。");
+
+});
+
 // =========================
 // Firestore監視
 // =========================
@@ -142,21 +154,78 @@ onSnapshot(doc(db, "records", SHUGYO_TYPE), (snap) => {
 
             const sec = Math.floor((now - start) / 1000);
 
-            liveTime.textContent = "経過：" + sec + " 秒";
+            const h = String(Math.floor(sec / 3600)).padStart(2,"0");
+            const m = String(Math.floor((sec % 3600)/60)).padStart(2,"0");
+            const s = String(sec % 60).padStart(2,"0");
+
+            liveTime.textContent = `${h}:${m}:${s}`;
 
         }, 1000);
+
+        startTimeText.textContent =
+        data.startTime.toDate().toLocaleTimeString("ja-JP",{
+
+        hour:"2-digit",
+        minute:"2-digit"
+
+        });
+
+        endTimeText.textContent="--:--";
 
     } else {
 
         if (data.elapsed != null) {
 
-            time.textContent = "記録：" + data.elapsed + " 秒";
+            const sec = data.elapsed;
+
+            const h = String(Math.floor(sec / 3600)).padStart(2,"0");
+            const m = String(Math.floor((sec % 3600)/60)).padStart(2,"0");
+            const s = String(sec % 60).padStart(2,"0");
+
+            time.textContent = `${h}:${m}:${s}`;
 
             liveTime.textContent = "";
 
         }
 
+        startTimeText.textContent =
+        data.startTime.toDate().toLocaleTimeString("ja-JP",{
+
+            hour:"2-digit",
+            minute:"2-digit"
+
+        });
+
+    if(data.endTime){
+
+    endTimeText.textContent =
+     data.endTime.toDate().toLocaleTimeString("ja-JP",{
+
+            hour:"2-digit",
+            minute:"2-digit"
+
+        });
+
+}
+
     }
+if(data.running){
+
+    startBtn.style.display="none";
+
+    stopBtn.style.display="block";
+
+    pauseBtn.style.display="block";
+
+}else{
+
+    startBtn.style.display="block";
+
+    stopBtn.style.display="none";
+
+    pauseBtn.style.display="none";
+
+}
 
 });
 

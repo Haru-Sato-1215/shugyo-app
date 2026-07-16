@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,29 +11,89 @@
 
 <body>
 
-    <h1 id="title">食事修行</h1>
+<div class="container">
 
-    <div class="card">
-        <h2>現在の状態</h2>
+    <!-- タイトル -->
+    <div class="header">
 
-        <p id="status">
+        <h1 id="title">🍱 食事</h1>
+
+        <div id="status" class="status">
             待機中
-        </p>
+        </div>
 
-        <p id="time">0秒</p>
+    </div>
 
-        <p id="liveTime">0秒</p>
+    <!-- タイマー -->
+    <div class="timer-card">
 
-        <button id="startBtn">
+        <div id="liveTime" class="live-time">
+            00:00:00
+        </div>
+
+    </div>
+
+    <!-- 情報カード -->
+    <div class="info-card">
+
+        <div class="info-item">
+            <p class="label">開始</p>
+            <p id="startTimeText">--:--</p>
+        </div>
+
+        <div class="info-item">
+            <p class="label">終了</p>
+            <p id="endTimeText">--:--</p>
+        </div>
+
+        <div class="info-item">
+            <p class="label">修行時間</p>
+            <p id="time">0 秒</p>
+        </div>
+
+    </div>
+
+    <!-- ボタン -->
+    <div class="button-area">
+
+        <button id="startBtn" class="main-button">
             修行開始
         </button>
 
-        <button id="stopBtn">
+        <button id="stopBtn" class="main-button stop-button">
             修行終了
         </button>
+
+        <button id="pauseBtn" class="sub-button">
+            中断
+        </button>
+
     </div>
 
-    <script type="module" src="app.js"></script>
+</div>
+
+<!-- 下ナビ -->
+<nav class="bottom-nav">
+
+    <div class="nav-item active">
+        🏠
+        <span>ホーム</span>
+    </div>
+
+    <div class="nav-item">
+        📖
+        <span>履歴</span>
+    </div>
+
+    <div class="nav-item">
+        ⚙️
+        <span>設定</span>
+    </div>
+
+</nav>
+
+<script type="module" src="app.js"></script>
 
 </body>
+
 </html>
