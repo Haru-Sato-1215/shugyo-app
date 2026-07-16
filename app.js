@@ -1,4 +1,4 @@
-alert("読み込めた");
+
 import { db } from "./firebase.js";
 
 
@@ -164,7 +164,6 @@ onSnapshot(doc(db, "records", SHUGYO_TYPE), (snap) => {
 // URLから開始・終了
 // =========================
 
-}
 
 
 if (action === "toggle") {
