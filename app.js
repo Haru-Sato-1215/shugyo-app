@@ -1,6 +1,3 @@
-const params = new URLSearchParams(window.location.search);
-
-const action = params.get("action");
 
 const title = document.getElementById("title");
 
@@ -127,14 +124,34 @@ if (data.running) {
 
 });
 
-if (action === "start") {
+const params = new URLSearchParams(window.location.search);
+const action = params.get("action");
 
-    startBtn.click();
+if (action === "toggle") {
 
-}
+    const ref = doc(db, "records", SHUGYO_TYPE);
 
-if (action === "stop") {
+    getDoc(ref).then((snap) => {
 
-    stopBtn.click();
+        if (!snap.exists()) {
+
+            startBtn.click();
+            return;
+
+        }
+
+        const data = snap.data();
+
+        if (data.running) {
+
+            stopBtn.click();
+
+        } else {
+
+            startBtn.click();
+
+        }
+
+    });
 
 }
