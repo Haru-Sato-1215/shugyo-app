@@ -1,6 +1,36 @@
+import { db } from "./firebase.js";
 
+import {
+  doc,
+  setDoc,
+  getDoc,
+  serverTimestamp,
+  Timestamp,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+// =========================
+// URLパラメータ取得
+// =========================
+const params = new URLSearchParams(window.location.search);
+
+const SHUGYO_TYPE = params.get("type") || "meal";
+const action = params.get("action");
+
+// =========================
+// HTML取得
+// =========================
 const title = document.getElementById("title");
+const status = document.getElementById("status");
+const time = document.getElementById("time");
+const liveTime = document.getElementById("liveTime");
 
+const startBtn = document.getElementById("startBtn");
+const stopBtn = document.getElementById("stopBtn");
+
+// =========================
+// タイトル
+// =========================
 switch (SHUGYO_TYPE) {
 
     case "meal":
@@ -18,35 +48,17 @@ switch (SHUGYO_TYPE) {
     case "walking":
         title.textContent = "🚶 経行";
         break;
-
 }
 
-
-
-const params = new URLSearchParams(window.location.search);
-
-const SHUGYO_TYPE = params.get("type") || "meal";
-const liveTime = document.getElementById("liveTime");
-
+// =========================
+// タイマー
+// =========================
 let timer = null;
 
-import { db } from "./firebase.js";
-
-import {
-  doc,
-  setDoc,
-  getDoc,
-  serverTimestamp,
-  Timestamp,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-const status = document.getElementById("status");
-
-const startBtn = document.getElementById("startBtn");
-const stopBtn = document.getElementById("stopBtn");
-
+// =========================
 // 修行開始
-startBtn.addEventListener("click", async () => {
+// =========================
+async function startTraining() {
 
     await setDoc(doc(db, "records", SHUGYO_TYPE), {
 
@@ -58,21 +70,18 @@ startBtn.addEventListener("click", async () => {
 
     });
 
-    status.textContent = "修行中";
+}
 
-});
-
+// =========================
 // 修行終了
-stopBtn.addEventListener("click", async () => {
+// =========================
+async function stopTraining() {
 
     const ref = doc(db, "records", SHUGYO_TYPE);
 
     const snap = await getDoc(ref);
 
-    if(!snap.exists()){
-        alert("開始されていません");
-        return;
-    }
+    if (!snap.exists()) return;
 
     const data = snap.data();
 
@@ -80,33 +89,34 @@ stopBtn.addEventListener("click", async () => {
 
     const end = new Date();
 
-    const elapsed =
-        Math.floor((end - start)/1000);
+    const elapsed = Math.floor((end - start) / 1000);
 
-    await setDoc(ref,{
+    await setDoc(ref, {
 
-        status:"終了",
+        status: "終了",
 
-        running:false,
+        running: false,
 
-        startTime:data.startTime,
+        startTime: data.startTime,
 
-        endTime:Timestamp.fromDate(end),
+        endTime: Timestamp.fromDate(end),
 
-        elapsed:elapsed
-
-        
+        elapsed: elapsed
 
     });
 
-    status.textContent="終了";
+}
 
-    alert("経過時間：" + elapsed + "秒");
+// =========================
+// ボタン
+// =========================
+startBtn.addEventListener("click", startTraining);
 
-});
+stopBtn.addEventListener("click", stopTraining);
 
-const time = document.getElementById("time");
-
+// =========================
+// Firestore監視
+// =========================
 onSnapshot(doc(db, "records", SHUGYO_TYPE), (snap) => {
 
     if (!snap.exists()) return;
@@ -116,39 +126,40 @@ onSnapshot(doc(db, "records", SHUGYO_TYPE), (snap) => {
     status.textContent = data.status;
 
     if (timer) {
-    clearInterval(timer);
-}
-
-if (data.running) {
-
-    const start = data.startTime.toDate();
-
-    timer = setInterval(() => {
-
-        const now = new Date();
-
-        const sec = Math.floor((now - start) / 1000);
-
-        liveTime.textContent = "経過：" + sec + " 秒";
-
-    }, 1000);
-
-} else {
-
-    if (data.elapsed != null) {
-
-        time.textContent = "記録：" + data.elapsed + " 秒";
-
-        liveTime.textContent = "";
+        clearInterval(timer);
     }
 
-}
+    if (data.running) {
+
+        const start = data.startTime.toDate();
+
+        timer = setInterval(() => {
+
+            const now = new Date();
+
+            const sec = Math.floor((now - start) / 1000);
+
+            liveTime.textContent = "経過：" + sec + " 秒";
+
+        }, 1000);
+
+    } else {
+
+        if (data.elapsed != null) {
+
+            time.textContent = "記録：" + data.elapsed + " 秒";
+
+            liveTime.textContent = "";
+
+        }
+
+    }
 
 });
 
-const params = new URLSearchParams(window.location.search);
-const action = params.get("action");
-
+// =========================
+// URLから開始・終了
+// =========================
 if (action === "toggle") {
 
     const ref = doc(db, "records", SHUGYO_TYPE);
@@ -157,7 +168,7 @@ if (action === "toggle") {
 
         if (!snap.exists()) {
 
-            startBtn.click();
+            startTraining();
             return;
 
         }
@@ -166,11 +177,11 @@ if (action === "toggle") {
 
         if (data.running) {
 
-            stopBtn.click();
+            stopTraining();
 
         } else {
 
-            startBtn.click();
+            startTraining();
 
         }
 
