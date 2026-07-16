@@ -1,4 +1,7 @@
+alert("読み込めた");
 import { db } from "./firebase.js";
+
+
 
 import {
   doc,
@@ -186,5 +189,38 @@ if (action === "toggle") {
         }
 
     });
+
+}
+
+
+if (action === "toggle") {
+
+    setTimeout(async () => {
+
+        const ref = doc(db, "records", SHUGYO_TYPE);
+
+        const snap = await getDoc(ref);
+
+        if (!snap.exists()) {
+
+            await startTraining();
+
+        } else {
+
+            const data = snap.data();
+
+            if (data.running) {
+
+                await stopTraining();
+
+            } else {
+
+                await startTraining();
+
+            }
+
+        }
+
+    }, 300);
 
 }
