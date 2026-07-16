@@ -1,9 +1,31 @@
 
 const title = document.getElementById("title");
 
-title.textContent = "食事修行";
+switch (SHUGYO_TYPE) {
 
-const SHUGYO_TYPE = "meal";
+    case "meal":
+        title.textContent = "🍱 食事";
+        break;
+
+    case "meditation":
+        title.textContent = "🧘 坐禅";
+        break;
+
+    case "samu":
+        title.textContent = "🧹 作務";
+        break;
+
+    case "walking":
+        title.textContent = "🚶 経行";
+        break;
+
+}
+
+
+
+const params = new URLSearchParams(window.location.search);
+
+const SHUGYO_TYPE = params.get("type") || "meal";
 const liveTime = document.getElementById("liveTime");
 
 let timer = null;
